@@ -21,6 +21,7 @@ import { FocBoolean } from "./Parameters/FocBoolean";
 import { FocScalar } from "./Parameters/FocScalar";
 import { MotorMonitorGraph } from "./MotorMonitorGraph";
 import { useSerialPortOpenStatus } from "../lib/serialContext";
+import { MotorControlTypeSwitch } from "./Parameters/MotorControlTypeSwitch";
 
 const MOTOR_OUTPUT_REGEX = /^\?(\w):(.*)\r?$/;
 
@@ -89,6 +90,8 @@ export const Motors = () => {
                 <Typography>Control</Typography>
               </AccordionSummary>
               <AccordionDetails>
+                <MotorControlTypeSwitch motorKey={key} />
+
                 <FocScalar
                   motorKey={key}
                   command=""
