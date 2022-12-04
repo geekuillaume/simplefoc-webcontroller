@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-export default function Header(props) {
+export default function Header(props: any) {
   return (
     <Box sx={{ flexGrow: 1 }} {...props}>
       <AppBar position="static">

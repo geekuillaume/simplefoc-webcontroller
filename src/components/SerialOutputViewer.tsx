@@ -4,7 +4,15 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useSerialPort, useSerialPortLines } from "../lib/serialContext";
 import { SerialLine } from "../simpleFoc/serial";
 
-const SerialLineDisplay = ({ index, style, data }) => (
+const SerialLineDisplay = ({
+  index,
+  style,
+  data,
+}: {
+  index: number;
+  style: any;
+  data: SerialLine[];
+}) => (
   <div
     style={{
       ...style,
@@ -24,9 +32,11 @@ const serialLinesToKey = (index: number, data: SerialLine[]) => {
   return data[index].index;
 };
 
+const SerialLinesList = FixedSizeList<SerialLine[]>;
+
 export const SerialOutputViewer = () => {
-  const listRef = useRef<FixedSizeList>();
-  const listOuterRef = useRef<HTMLDivElement>();
+  const listRef = useRef<any>();
+  const listOuterRef = useRef<any>();
   const lines = useSerialPortLines();
 
   useEffect(() => {
@@ -60,7 +70,7 @@ export const SerialOutputViewer = () => {
           contain: "content",
         }}
       >
-        <FixedSizeList
+        <SerialLinesList
           itemData={lines}
           itemCount={lines.length}
           height={300}
@@ -71,7 +81,7 @@ export const SerialOutputViewer = () => {
           outerRef={listOuterRef}
         >
           {SerialLineDisplay}
-        </FixedSizeList>
+        </SerialLinesList>
       </Box>
     </Box>
   );
