@@ -94,22 +94,24 @@ export const SerialManager = ({
                 Disconnect
               </Button>
             </ButtonGroup>
-            <Stack gap={1} alignContent="center" alignItems="stretch">
-              <Typography sx={{ color: "grey.800" }}>
-                Previously connected:
-              </Typography>
-              {ports.map((port, i) => (
-                <Chip
-                  key={i}
-                  clickable
-                  disabled={!!serial && !!serial.port}
-                  label={`${port.getInfo().usbVendorId} - ${
-                    port.getInfo().usbProductId
-                  }`}
-                  onClick={() => handleConnect(port)}
-                />
-              ))}
-            </Stack>
+            {!!ports.length && (
+              <Stack gap={1} alignContent="center" alignItems="stretch">
+                <Typography sx={{ color: "grey.800" }}>
+                  Previously connected:
+                </Typography>
+                {ports.map((port, i) => (
+                  <Chip
+                    key={i}
+                    clickable
+                    disabled={!!serial && !!serial.port}
+                    label={`${port.getInfo().usbVendorId} - ${
+                      port.getInfo().usbProductId
+                    }`}
+                    onClick={() => handleConnect(port)}
+                  />
+                ))}
+              </Stack>
+            )}
           </Stack>
           <Stack flex={1} gap={1}>
             <SerialOutputViewer />

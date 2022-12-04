@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,11 +20,13 @@ import { useSerialLineEvent } from "../lib/useSerialLineEvent";
 import { FocBoolean } from "./Parameters/FocBoolean";
 import { FocScalar } from "./Parameters/FocScalar";
 import { MotorMonitorGraph } from "./MotorMonitorGraph";
+import { useSerialPortOpenStatus } from "../lib/serialContext";
 
 const MOTOR_OUTPUT_REGEX = /^\?(\w):(.*)\r?$/;
 
 export const Motors = () => {
   const [motors, setMotors] = useState<{ [key: string]: string }>({});
+  const portOpen = useSerialPortOpenStatus();
 
   useSerialIntervalSender("?", 10000);
   useSerialLineEvent((line) => {
@@ -36,9 +39,31 @@ export const Motors = () => {
     }
   });
 
+  if (!Object.keys(motors).length) {
+    if (!portOpen) {
+      return (
+        <Stack gap={3} alignItems="center">
+          <Typography variant="h4" sx={{ color: "grey.600" }}>
+            Waiting for connection...
+          </Typography>
+        </Stack>
+      );
+    }
+    return (
+      <Stack gap={3} alignItems="center">
+        <CircularProgress sx={{ color: "grey.600" }} />
+        <Typography variant="h4" sx={{ color: "grey.600" }}>
+          Waiting for motors list from controller...
+        </Typography>
+        <Typography sx={{ color: "grey.600" }}>
+          Make sure to use "machine_readable" verbose mode
+        </Typography>
+      </Stack>
+    );
+  }
+
   return (
     <Stack>
-      <Typography variant="h4">Motors</Typography>
       {Object.entries(motors).map(([key, name]) => (
         <Card key={key}>
           <CardHeader
