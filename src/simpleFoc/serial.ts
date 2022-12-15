@@ -29,7 +29,7 @@ export class SimpleFocSerialPort extends EventEmitter<"line" | "stateChange"> {
     const port =
       existingPort ||
       (await navigator.serial.requestPort({
-        filters: [{ usbVendorId: 0x1a86 }],
+        filters: [],
       }));
     await port.open({
       baudRate: this.baudRate,

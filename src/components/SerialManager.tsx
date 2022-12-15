@@ -18,7 +18,23 @@ import { SimpleFocSerialPort } from "../simpleFoc/serial";
 import { SerialCommandPrompt } from "./SerialCommandPrompt";
 import { SerialOutputViewer } from "./SerialOutputViewer";
 
-const BAUD_RATES = [11200, 921600];
+const BAUD_RATES = 
+[
+  300,
+  1200,
+  2400,
+  4800,
+  9600,
+  11200,
+  19200,
+  38400,
+  57600,
+  74880,
+  115200,
+  230400,
+  250000,
+  921600
+];
 
 export const SerialManager = ({
   onSetSerial,
