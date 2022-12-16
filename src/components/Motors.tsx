@@ -19,15 +19,21 @@ import { useSerialIntervalSender } from "../lib/useSerialIntervalSender";
 import { useSerialLineEvent } from "../lib/useSerialLineEvent";
 import { FocBoolean } from "./Parameters/FocBoolean";
 import { FocScalar } from "./Parameters/FocScalar";
-import { MotorMonitorGraph } from "./MotorMonitorGraph";
+import { Monitoring } from "./Parameters/Monitoring";
 import { useSerialPortOpenStatus } from "../lib/serialContext";
+import { TorqueControlTypeSwitch } from "./Parameters/TorqueControlTypeSwitch";
 import { MotorControlTypeSwitch } from "./Parameters/MotorControlTypeSwitch";
+import { Chip, Slider} from "@mui/material";
+import { Box } from "@mui/system";
+import { useSerialPort } from "../lib/serialContext";
+import { SimpleFocSerialPort } from "../simpleFoc/serial";
 
 const MOTOR_OUTPUT_REGEX = /^\?(\w):(.*)\r?$/;
 
 export const Motors = () => {
   const [motors, setMotors] = useState<{ [key: string]: string }>({});
   const portOpen = useSerialPortOpenStatus();
+  const serial = useSerialPort();
 
   useSerialIntervalSender("?", 10000);
   useSerialLineEvent((line) => {
@@ -40,6 +46,7 @@ export const Motors = () => {
     }
   });
 
+ 
   if (!Object.keys(motors).length) {
     if (!portOpen) {
       return (
@@ -87,11 +94,13 @@ export const Motors = () => {
           <CardContent>
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Control</Typography>
+                <Typography>Motion Control</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <MotorControlTypeSwitch motorKey={key} />
-
+                <Stack direction="row" alignItems={"center"} spacing={2} sx={{ marginBottom: 1 }}>
+                  <MotorControlTypeSwitch motorKey={key} />
+                  <TorqueControlTypeSwitch motorKey={key} />
+                </Stack>
                 <FocScalar
                   motorKey={key}
                   command=""
@@ -108,6 +117,122 @@ export const Motors = () => {
                   defaultMax={30}
                   step={1}
                 />
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Current PID</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+              <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Current Q</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FocScalar
+                  motorKey={key}
+                  command="QP"
+                  label="Propotionnal"
+                  defaultMin={0}
+                  defaultMax={5}
+                  step={0.01}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="QI"
+                  label="Integral"
+                  defaultMin={0}
+                  defaultMax={40}
+                  step={0.01}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="QD"
+                  label="Derivative"
+                  defaultMin={0}
+                  defaultMax={1}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="QR"
+                  label="Output Ramp"
+                  defaultMin={0}
+                  defaultMax={10000}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="QL"
+                  label="Output Limit"
+                  defaultMin={0}
+                  defaultMax={24}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="QF"
+                  label="Filtering"
+                  defaultMin={0}
+                  defaultMax={0.2}
+                  step={0.001}
+                />
+              </AccordionDetails>
+            </Accordion><Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Current D</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <FocScalar
+                  motorKey={key}
+                  command="DP"
+                  label="Propotionnal"
+                  defaultMin={0}
+                  defaultMax={5}
+                  step={0.01}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="DI"
+                  label="Integral"
+                  defaultMin={0}
+                  defaultMax={40}
+                  step={0.01}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="DD"
+                  label="Derivative"
+                  defaultMin={0}
+                  defaultMax={1}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="DR"
+                  label="Output Ramp"
+                  defaultMin={0}
+                  defaultMax={10000}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="DL"
+                  label="Output Limit"
+                  defaultMin={0}
+                  defaultMax={24}
+                  step={0.0001}
+                />
+                <FocScalar
+                  motorKey={key}
+                  command="DF"
+                  label="Filtering"
+                  defaultMin={0}
+                  defaultMax={0.2}
+                  step={0.001}
+                />
+              </AccordionDetails>
+            </Accordion>
               </AccordionDetails>
             </Accordion>
             <Accordion>
@@ -188,7 +313,8 @@ export const Motors = () => {
                 />
               </AccordionDetails>
             </Accordion>
-            <MotorMonitorGraph motorKey={key} />
+            
+          <Monitoring motorKey={key}/>
           </CardContent>
         </Card>
       ))}
