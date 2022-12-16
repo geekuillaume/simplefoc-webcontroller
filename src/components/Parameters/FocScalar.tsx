@@ -26,7 +26,7 @@ export const FocScalar = (props: {
 
   const [targetValue, setTargetValue] = useState<number | null>(null); // value sent to controller
   const [targetValueEntry, setTargetValueEntry] = useState<string | "">(""); // value sent to controller
-  const [stepValue, setStepValue] = useState<number | props.step>(props.step); // value sent to controller
+  const [stepValue, setStepValue] = useState<number | 0.1>(0.1); // value sent to controller
   const [value, setValue] = useState<number | null>(null); // value acknowledged by controller, for now not used
   const serialRef = useSerialPortRef();
 
@@ -40,6 +40,7 @@ export const FocScalar = (props: {
         if (targetValue === null) {
           setTargetValue(receivedValue);
           setTargetValueEntry(receivedValue.toString());
+          setStepValue(props.step)
         }
       }
     }

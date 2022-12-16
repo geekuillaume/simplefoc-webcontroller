@@ -3,7 +3,6 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  Item,
 } from "@mui/material";
 import { useState } from "react";
 import { useSerialPortRef } from "../../lib/serialContext";

@@ -32,11 +32,17 @@ export const Monitoring = (props: {
 
   var monitoredVars = "0000000"
 
-  function setCharAt(str,index,chr) {
+  const setCharAt = (str:string,index:number,chr:string) => {
     if(index > str.length-1) return str;
     index = index+1;
-    return str.substring(0,index) + chr + str.substring(index);
+    return str.substring(0,index) + chr + str.substring(index+1);
   }
+  const getCheckboxValue = (id:string) => {
+    var element = document.getElementById(id) as HTMLInputElement | null;
+    if (element == null) return "0";
+    else return element.checked ? "1" : "0";
+  }
+
   const changeValue = useMemo(
     () =>
       throttle((value: string) => {
@@ -46,14 +52,15 @@ export const Monitoring = (props: {
   );
 
   const updateMonitoredVars = ()=>{
-    monitoredVars=(setCharAt(monitoredVars, 0, document.getElementById('tar').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 1, document.getElementById('vq').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 2, document.getElementById('vd').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 3, document.getElementById('cq').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 4, document.getElementById('cd').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 5, document.getElementById('vel').checked ? "1" : "0"));
-    monitoredVars=(setCharAt(monitoredVars, 6, document.getElementById('angle').checked ? "1" : "0"));
+    monitoredVars=setCharAt(monitoredVars, 0, getCheckboxValue('tar'));
+    monitoredVars=setCharAt(monitoredVars, 1, getCheckboxValue('vq'));
+    monitoredVars=setCharAt(monitoredVars, 2, getCheckboxValue('vd'));
+    monitoredVars=setCharAt(monitoredVars, 3, getCheckboxValue('cq'));
+    monitoredVars=setCharAt(monitoredVars, 4, getCheckboxValue('cd'));
+    monitoredVars=setCharAt(monitoredVars, 5, getCheckboxValue('vel'));
+    monitoredVars=setCharAt(monitoredVars, 6, getCheckboxValue('angle'));
     changeValue(monitoredVars);
+    console.log(monitoredVars)
   }
   
 
