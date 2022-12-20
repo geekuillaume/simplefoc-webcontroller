@@ -9,24 +9,22 @@ import { useSerialPortRef } from "../../lib/serialContext";
 import { useSerialIntervalSender } from "../../lib/useSerialIntervalSender";
 import { useSerialLineEvent } from "../../lib/useSerialLineEvent";
 
-const CONTROL_VALUES = ["torque", "vel", "angle", "vel open", "angle open"];
+const TORQUE_VALUES = ["volt", "dc curr", "foc curr"];
 
-const CONTROL_VALUE_TO_INDEX = {
-  torque: 0,
-  vel: 1,
-  angle: 2,
-  "vel open": 3,
-  "angle open": 4,
+const TORQUE_VALUE_TO_INDEX = {
+  volt: 0,
+  "dc curr": 1,
+  "foc curr": 2
 } as any;
 
-export const MotorControlTypeSwitch = ({ motorKey }: { motorKey: string }) => {
-  const fullCommandString = `${motorKey}C`;
+export const TorqueControlTypeSwitch = ({ motorKey }: { motorKey: string }) => {
+  const fullCommandString = `${motorKey}T`;
   const [value, setValue] = useState<string | null>(null);
   const serialRef = useSerialPortRef();
 
   const handleChange = (e: any, val: string) => {
     serialRef.current?.send(
-      `${fullCommandString}${CONTROL_VALUE_TO_INDEX[val]}`
+      `${fullCommandString}${TORQUE_VALUE_TO_INDEX[val]}`
     );
   };
 
@@ -34,7 +32,7 @@ export const MotorControlTypeSwitch = ({ motorKey }: { motorKey: string }) => {
     if (
       line.content.startsWith(fullCommandString) &&
       // need to filter out the downsample command too which is "{motorKey}CD"
-      CONTROL_VALUES.map((val) => fullCommandString + val).some(
+      TORQUE_VALUES.map((val) => fullCommandString + val).some(
         (val) => line.content === val
       )
     ) {
@@ -47,13 +45,11 @@ export const MotorControlTypeSwitch = ({ motorKey }: { motorKey: string }) => {
 
   return (
     <Stack alignItems="center" direction="row" spacing={2}>
-      <Typography>Motion control:</Typography>
+      <Typography>Torque mode:</Typography>
       <ToggleButtonGroup value={value} exclusive onChange={handleChange}>
-        <ToggleButton value="torque">Torque</ToggleButton>
-        <ToggleButton value="vel">Velocity</ToggleButton>
-        <ToggleButton value="angle">Angle</ToggleButton>
-        <ToggleButton value="vel open">Velocity open</ToggleButton>
-        <ToggleButton value="angle open">Angle open</ToggleButton>
+        <ToggleButton value="volt">Voltage</ToggleButton>
+        <ToggleButton value="dc curr">DC Current</ToggleButton>
+        <ToggleButton value="foc curr">FOC current</ToggleButton>
       </ToggleButtonGroup>
     </Stack>
   );

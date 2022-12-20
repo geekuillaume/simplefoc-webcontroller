@@ -1,6 +1,6 @@
-import { Chip, Stack, TextField } from "@mui/material";
+import { Chip, Stack, TextField, Slider, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { KeyboardEventHandler, useState } from "react";
+import { KeyboardEventHandler, useState, MouseEventHandler } from "react";
 import { useSerialPort } from "../lib/serialContext";
 import { SimpleFocSerialPort } from "../simpleFoc/serial";
 
@@ -15,6 +15,7 @@ export const SerialCommandPrompt = () => {
     }
   };
 
+
   const handleStoredCommandClick = (command: string) => () => {
     serial?.send(command);
   };
@@ -23,8 +24,13 @@ export const SerialCommandPrompt = () => {
     serial?.restartTarget();
   };
 
+  
+  const handleMachineReadable = () => {
+    serial?.send("@3");
+  };
+
   return (
-    <Stack gap={2}>
+    <Stack gap={2} direction={"row"}>
       <Box flex={1} sx={{ display: "flex" }}>
         <TextField
           disabled={!serial}
@@ -36,19 +42,10 @@ export const SerialCommandPrompt = () => {
           sx={{ flex: 1 }}
         />
       </Box>
-      <Stack gap={3} direction={"row"}>
-        <Chip clickable label="Restart" onClick={handleRestart} />
-        <Chip
-          clickable
-          label="Disable monitoring"
-          onClick={handleStoredCommandClick("NMC")}
-        />
-        <Chip
-          clickable
-          label="Enable monitoring"
-          onClick={handleStoredCommandClick("NMS01100011")}
-        />
+        <Stack gap={2} direction={"column"}>
+          <Chip clickable label="Force machine readable mode" onClick={handleMachineReadable} />
+          <Chip clickable label="Restart" onClick={handleRestart} />
+        </Stack>
       </Stack>
-    </Stack>
   );
 };
